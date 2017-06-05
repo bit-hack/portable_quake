@@ -71,7 +71,8 @@ modes listed in the Video menu.
 setting the mode, leaving it set for 5 seconds, and returning to the previous
 mode.  This lets you verify that your computer does in fact support that
 mode.  We highly recommend that you always test modes with 'T' before setting
-thempermanently by pressing the Enter key, in case some sort of hardware or
+them
+permanently by pressing the Enter key, in case some sort of hardware or
 software glitch causes a mode to function incorrectly and produce a garbled
 screen.  It is unlikely but possible that testing or setting a mode will
 cause your computer to hang or crash; if this happens, there is a serious
@@ -117,7 +118,8 @@ listed for the desired mode by vid_describemodes.  Higher-resolution modes
 generally require more extra system memory in order to run, and many are
 not available in 8 Mb systems; modes that are supported by the video
 adapter but are currently unavailable due to system  memory limitations
-will still show up inthe mode list from vid_describemodes, but will
+will still show up in
+the mode list from vid_describemodes, but will
 have "**" in place of a mode number.  (Such modes will not show up at
 all in the Video Modes menu.)  If you try to set a mode for which
 there is insufficient system memory, you will receive a message to that
@@ -176,8 +178,10 @@ modes that are supported; also, if no LFB 320x200 mode is available,
 a banked 320x200 VESA mode is queried for.  All such modes are added
 to the mode list starting at mode 11.  The available modes will vary
 depending on adapter, graphics chipset, amount of video memory, and VESA
-2.0 driver.  The higher the resolution, the lower the performance, and
-thehigher-resolution modes will often be too slow for good gameplay
+2.0
+ driver.  The higher the resolution, the lower the performance, and
+the
+higher-resolution modes will often be too slow for good gameplay
 on most machines.  (Also, higher-resolution modes often need more memory
 than is available in an 8 Mb system.)  The screen can be sized down to
 improve performance in higher-resolution modes, but then of course the
@@ -189,7 +193,8 @@ modes 0-10, because adapters often have faster memory access in LFB modes.
 If a given VESA mode can support page flipping, then it defaults to page-
 flipped operation.  A VESA mode can be forced to non-page-flipped operation
 by setting the vid_nopageflip console variable to 1, then setting the mode
-(note that vid_nopageflip takes operation on the next, not the current, mode
+
+(note that vid_nopageflip takes operation on the next, not the current, mode
 set, and note that it then stays in effect permanently, even when Quake is
 exited and restarted, unless it is manually set back to 0).  If there is not
 enough memory for two pages in a VESA mode, or if the
@@ -700,9 +705,12 @@ SBINFO
     in the system.  If the version is 4 or greater, then it is some
 	kind of Sound Blaster 16 or compatible.  Version 2 is an 8 bit mono
 	sound blaster, Version 3 is an 8 bit stereo sound blaster pro.
-	The port is the I/O portsensed from the A variable in the BLASTER
-	environment variable.The DMA is the DMA channel and is confirmed in
-	hardware if thecard is version 4 or higher.  The mixer port can be
+	The port is the I/O port
+sensed from the A variable in the BLASTER
+	environment variable.
+The DMA is the DMA channel and is confirmed in
+	hardware if the
+card is version 4 or higher.  The mixer port can be
 	ignored.
 
 
@@ -1123,9 +1131,12 @@ clear
 startup
 shutdown
    This allows you to specify the clear, startup, and shutdown strings
-   needed fora modem for playing Quake.  If you've found values that
-   previously workedwith Doom, use them here.  If you are playing over
-   a null modem cable,leave these blank.
+   needed for
+a modem for playing Quake.  If you've found values that
+   previously worked
+with Doom, use them here.  If you are playing over
+   a null modem cable,
+leave these blank.
 
 -cts | +cts
 -dsr | +dsr
@@ -1133,7 +1144,8 @@ shutdown
    These determine if certain serial control lines should be honored or
    ignored. The "-" means you want that line ignored, the "+" means to honor
    it. "cts" is an abbreviation for "clear to send", "dsr" for
-   "data set ready", and "cd" for "carrier detect".  Do notchange these
+   "data set ready", and "cd" for "carrier detect".  Do not
+change these
    values unless you are absolutely positive you need to. The default is to
    ignore all 3 lines.
 

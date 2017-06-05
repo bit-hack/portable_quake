@@ -114,8 +114,10 @@ III. THE BASICS OF PLAY
 A. Goal of the Game
 	Quake has two basic goals. First, stay alive. Second, get out of the
         place you're in. The first level of each episode ends in a slipgate -- 
-        these signify thatyou're entering another dimension. When you complete 
-        an entiredimension (this takes six to eight levels), you'll find a
+        these signify that
+you're entering another dimension. When you complete 
+        an entire
+dimension (this takes six to eight levels), you'll find a
         Rune and another slipgate, which returns you to the start. 
 
 B. Skill
@@ -172,7 +174,8 @@ D. Getting About
       have to submerge to find it.
    Shooting
       Tap the Shoot key (the Ctrl key or left mousebutton) to fire. Hold it 
-      down tokeep firing.
+      down to
+keep firing.
    Use
       Quake has no "Use" function. To push a button or open a door, walk up
       to it. To ride a platform up or down, step atop it. If a door won't open 
@@ -362,7 +365,8 @@ B. The Main Menu
          by checking your Communications Configuration menu. 
 
    SAVE
-      Brings up a list of saved games. Highlight the desired slot, and tap the      Enter key. Each saved game is identified by the level's name, plus the 
+      Brings up a list of saved games. Highlight the desired slot, and tap the 
+     Enter key. Each saved game is identified by the level's name, plus the 
       proportion of kills you have achieved so far. 
    LOAD
       Brings up a list of saved games. Highlight the desired slot, and tap the
