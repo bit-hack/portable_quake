@@ -745,9 +745,6 @@ keypress.
 */
 int SCR_ModalMessage (char *text)
 {
-	if (cls.state == ca_dedicated)
-		return true;
-
 	scr_notifystring = text;
  
 // draw a fresh screen
@@ -827,9 +824,6 @@ void SCR_UpdateScreen (void)
 		else
 			return;
 	}
-
-	if (cls.state == ca_dedicated)
-		return;				// stdout only
 
 	if (!scr_initialized || !con_initialized)
 		return;				// not initialized yet

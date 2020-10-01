@@ -113,12 +113,12 @@ set(SOURCES
 	world.h
 	zone.c
 	zone.h
-    d_vars.c
+	d_vars.c
 	nonintel.c
-    snd_null.c
-    cd_null.c
-    net_none.c
-    )
+	snd_null.c
+	cd_null.c
+	net_none.c
+	)
 
 add_executable(quake ${SOURCES})
 target_link_libraries(quake ${SDL_LIBRARY})

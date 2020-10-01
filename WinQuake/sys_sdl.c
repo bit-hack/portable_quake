@@ -1,18 +1,19 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <sys/types.h>
-#include <fcntl.h>
-
 #include <assert.h>
-
+#include <time.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
 
+#define _SDL_main_h
+#include <SDL.h>
+
 #include "quakedef.h"
+
 
 qboolean			isDedicated;
 
@@ -238,44 +239,29 @@ int Sys_FileWrite (int handle, void *src, int count)
 int	Sys_FileTime (char *path)
 {
 	FILE	*f;
-	
 	f = fopen(path, "rb");
 	if (f)
 	{
 		fclose(f);
 		return 1;
 	}
-	
 	return -1;
 }
 
 void Sys_mkdir (char *path)
 {
-    mkdir (path);
 }
 
 void Sys_DebugLog(char *file, char *fmt, ...)
 {
-    va_list argptr; 
-    static char data[1024];
-    FILE *fp;
-    
-    va_start(argptr, fmt);
-    vsprintf(data, fmt, argptr);
-    va_end(argptr);
-    fp = fopen(file, "a");
-    fwrite(data, strlen(data), 1, fp);
-    fclose(fp);
 }
 
 float Sys_FloatTime (void)
 {
-	static int starttime = 0;
-
+	static clock_t starttime = 0;
 	if ( ! starttime )
 		starttime = clock();
-
-	return (clock()-starttime)*1.0f/1024;
+	return (float)(clock()-starttime) / (float)CLOCKS_PER_SEC;
 }
 
 // =======================================================================
@@ -317,27 +303,11 @@ void Sys_Sleep(void)
 	SDL_Delay(1);
 }
 
-void floating_point_exception_handler(int whatever)
-{
-//	Sys_Warn("floating point exception\n");
-	signal(SIGFPE, floating_point_exception_handler);
-}
-
-void moncontrol(int x)
-{
-}
-
 int main (int c, char **v)
 {
-
-	float		time, oldtime, newtime;
+	float time, oldtime, newtime;
 	quakeparms_t parms;
 	static int frame;
-
-	moncontrol(0);
-
-//	signal(SIGFPE, floating_point_exception_handler);
-	signal(SIGFPE, SIG_IGN);
 
 	parms.memsize = 8*1024*1024;
 	parms.membase = malloc (parms.memsize);
@@ -361,25 +331,12 @@ int main (int c, char **v)
         newtime = Sys_FloatTime ();
         time = newtime - oldtime;
 
-        if (cls.state == ca_dedicated)
-        {   // play vcrfiles at max speed
-            if (time < sys_ticrate.value)
-            {
-                SDL_Delay (1);
-                continue;       // not time to run a server only tic yet
-            }
-            time = sys_ticrate.value;
-        }
-
         if (time > sys_ticrate.value*2)
             oldtime = newtime;
         else
             oldtime += time;
 
-        if (++frame > 10)
-            moncontrol(1);      // profile only while we do each Quake frame
         Host_Frame (time);
-        moncontrol(0);
 
 // graphic debugging aids
         if (sys_linerefresh.value)

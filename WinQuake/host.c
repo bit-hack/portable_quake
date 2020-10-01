@@ -95,9 +95,6 @@ void Host_EndGame (char *message, ...)
 	
 	if (sv.active)
 		Host_ShutdownServer (false);
-
-	if (cls.state == ca_dedicated)
-		Sys_Error ("Host_EndGame: %s\n",string);	// dedicated servers exit
 	
 	if (cls.demonum != -1)
 		CL_NextDemo ();
@@ -134,9 +131,6 @@ void Host_Error (char *error, ...)
 	if (sv.active)
 		Host_ShutdownServer (false);
 
-	if (cls.state == ca_dedicated)
-		Sys_Error ("Host_Error: %s\n",string);	// dedicated servers exit
-
 	CL_Disconnect ();
 	cls.demonum = -1;
 
@@ -156,25 +150,11 @@ void	Host_FindMaxClients (void)
 
 	svs.maxclients = 1;
 		
-	i = COM_CheckParm ("-dedicated");
-	if (i)
-	{
-		cls.state = ca_dedicated;
-		if (i != (com_argc - 1))
-		{
-			svs.maxclients = Q_atoi (com_argv[i+1]);
-		}
-		else
-			svs.maxclients = 8;
-	}
-	else
-		cls.state = ca_disconnected;
+	cls.state = ca_disconnected;
 
 	i = COM_CheckParm ("-listen");
 	if (i)
 	{
-		if (cls.state == ca_dedicated)
-			Sys_Error ("Only one of -dedicated or -listen can be specified");
 		if (i != (com_argc - 1))
 			svs.maxclients = Q_atoi (com_argv[i+1]);
 		else
@@ -754,27 +734,24 @@ void Host_Init (quakeparms_t *parms)
 	Con_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));
 	
 	R_InitTextures ();		// needed even for dedicated servers
- 
-	if (cls.state != ca_dedicated)
-	{
-		host_basepal = (byte *)COM_LoadHunkFile ("gfx/palette.lmp");
-		if (!host_basepal)
-			Sys_Error ("Couldn't load gfx/palette.lmp");
-		host_colormap = (byte *)COM_LoadHunkFile ("gfx/colormap.lmp");
-		if (!host_colormap)
-			Sys_Error ("Couldn't load gfx/colormap.lmp");
 
-		VID_Init (host_basepal);
+	host_basepal = (byte *)COM_LoadHunkFile ("gfx/palette.lmp");
+	if (!host_basepal)
+		Sys_Error ("Couldn't load gfx/palette.lmp");
+	host_colormap = (byte *)COM_LoadHunkFile ("gfx/colormap.lmp");
+	if (!host_colormap)
+		Sys_Error ("Couldn't load gfx/colormap.lmp");
 
-		Draw_Init ();
-		SCR_Init ();
-		R_Init ();
+	VID_Init (host_basepal);
 
-		CDAudio_Init ();
-		Sbar_Init ();
-		CL_Init ();
-		IN_Init ();
-	}
+	Draw_Init ();
+	SCR_Init ();
+	R_Init ();
+
+	CDAudio_Init ();
+	Sbar_Init ();
+	CL_Init ();
+	IN_Init ();
 
 	Cbuf_InsertText ("exec quake.rc\n");
 
@@ -815,10 +792,6 @@ void Host_Shutdown(void)
 	NET_Shutdown ();
 	S_Shutdown();
 	IN_Shutdown ();
-
-	if (cls.state != ca_dedicated)
-	{
-		VID_Shutdown();
-	}
+	VID_Shutdown();
 }
 

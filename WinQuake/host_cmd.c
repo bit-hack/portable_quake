@@ -36,13 +36,13 @@ extern void M_Menu_Quit_f (void);
 
 void Host_Quit_f (void)
 {
-	if (key_dest != key_console && cls.state != ca_dedicated)
+	if (key_dest != key_console)
 	{
 		M_Menu_Quit_f ();
 		return;
 	}
 	CL_Disconnect ();
-	Host_ShutdownServer(false);		
+	Host_ShutdownServer(false);
 
 	Sys_Quit ();
 }
@@ -283,18 +283,15 @@ void Host_Map_f (void)
 	if (!sv.active)
 		return;
 	
-	if (cls.state != ca_dedicated)
-	{
-		strcpy (cls.spawnparms, "");
+	strcpy (cls.spawnparms, "");
 
-		for (i=2 ; i<Cmd_Argc() ; i++)
-		{
-			strcat (cls.spawnparms, Cmd_Argv(i));
-			strcat (cls.spawnparms, " ");
-		}
+	for (i=2 ; i<Cmd_Argc() ; i++)
+	{
+		strcat (cls.spawnparms, Cmd_Argv(i));
+		strcat (cls.spawnparms, " ");
+	}
 		
-		Cmd_ExecuteString ("connect local", src_command);
-	}	
+	Cmd_ExecuteString ("connect local", src_command);
 }
 
 /*
@@ -648,11 +645,8 @@ void Host_Loadgame_f (void)
 	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
 		svs.clients->spawn_parms[i] = spawn_parms[i];
 
-	if (cls.state != ca_dedicated)
-	{
-		CL_EstablishConnection ("local");
-		Host_Reconnect_f ();
-	}
+	CL_EstablishConnection ("local");
+	Host_Reconnect_f ();
 }
 
 //============================================================================
@@ -718,16 +712,8 @@ void Host_Say(qboolean teamonly)
 
 	if (cmd_source == src_command)
 	{
-		if (cls.state == ca_dedicated)
-		{
-			fromServer = true;
-			teamonly = false;
-		}
-		else
-		{
-			Cmd_ForwardToServer ();
-			return;
-		}
+		Cmd_ForwardToServer ();
+		return;
 	}
 
 	if (Cmd_Argc () < 2)
@@ -1168,10 +1154,7 @@ void Host_Kick_f (void)
 	if (i < svs.maxclients)
 	{
 		if (cmd_source == src_command)
-			if (cls.state == ca_dedicated)
-				who = "Console";
-			else
-				who = cl_name.string;
+			who = cl_name.string;
 		else
 			who = save->name;
 
@@ -1218,7 +1201,7 @@ Host_Give_f
 void Host_Give_f (void)
 {
 	char	*t;
-	int		v, w;
+	int		v;
 	eval_t	*val;
 
 	if (cmd_source == src_command)
@@ -1509,13 +1492,6 @@ void Host_Startdemos_f (void)
 {
 	int		i, c;
 
-	if (cls.state == ca_dedicated)
-	{
-		if (!sv.active)
-			Cbuf_AddText ("map start\n");
-		return;
-	}
-
 	c = Cmd_Argc() - 1;
 	if (c > MAX_DEMOS)
 	{
@@ -1546,8 +1522,6 @@ Return to looping demos
 */
 void Host_Demos_f (void)
 {
-	if (cls.state == ca_dedicated)
-		return;
 	if (cls.demonum == -1)
 		cls.demonum = 1;
 	CL_Disconnect_f ();
@@ -1563,8 +1537,6 @@ Return to looping demos
 */
 void Host_Stopdemo_f (void)
 {
-	if (cls.state == ca_dedicated)
-		return;
 	if (!cls.demoplayback)
 		return;
 	CL_StopPlayback ();

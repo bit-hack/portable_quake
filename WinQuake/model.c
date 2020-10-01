@@ -1801,10 +1801,10 @@ void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 	mod->synctype = LittleLong (pin->synctype);
 	psprite->numframes = numframes;
 
-	mod->mins[0] = (vec_t) mod->mins[1] = -psprite->maxwidth/2;
-	mod->maxs[0] = (vec_t) mod->maxs[1] = psprite->maxwidth/2;
-	mod->mins[2] = (vec_t) -psprite->maxheight/2;
-	mod->maxs[2] = (vec_t) psprite->maxheight/2;
+	mod->mins[0] = (float) mod->mins[1] = -psprite->maxwidth/2;
+	mod->maxs[0] = (float) mod->maxs[1] = psprite->maxwidth/2;
+	mod->mins[2] = (float) -psprite->maxheight/2;
+	mod->maxs[2] = (float) psprite->maxheight/2;
 	
 //
 // load the frames
