@@ -9,7 +9,6 @@ add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 set(SOURCES
 	adivtab.h
-	anorm_dots.h
 	anorms.h
 	block16.h
 	block8.h

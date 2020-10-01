@@ -741,8 +741,8 @@ void CalcSurfaceExtents (msurface_t *s)
 
 	for (i=0 ; i<2 ; i++)
 	{	
-		bmins[i] = floor(mins[i]/16);
-		bmaxs[i] = ceil(maxs[i]/16);
+		bmins[i] =(int) floorf(mins[i]/16);
+		bmaxs[i] =(int) ceilf(maxs[i]/16);
 
 		s->texturemins[i] = bmins[i] * 16;
 		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;
@@ -1685,10 +1685,10 @@ void * Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe)
 	origin[0] = LittleLong (pinframe->origin[0]);
 	origin[1] = LittleLong (pinframe->origin[1]);
 
-	pspriteframe->up = origin[1];
-	pspriteframe->down = origin[1] - height;
-	pspriteframe->left = origin[0];
-	pspriteframe->right = width + origin[0];
+	pspriteframe->up =    (int) origin[1];
+	pspriteframe->down =  (int) origin[1] - height;
+	pspriteframe->left =  (int) origin[0];
+	pspriteframe->right = (int) width + origin[0];
 
 	if (r_pixbytes == 1)
 	{
@@ -1801,10 +1801,10 @@ void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 	mod->synctype = LittleLong (pin->synctype);
 	psprite->numframes = numframes;
 
-	mod->mins[0] = mod->mins[1] = -psprite->maxwidth/2;
-	mod->maxs[0] = mod->maxs[1] = psprite->maxwidth/2;
-	mod->mins[2] = -psprite->maxheight/2;
-	mod->maxs[2] = psprite->maxheight/2;
+	mod->mins[0] = (vec_t) mod->mins[1] = -psprite->maxwidth/2;
+	mod->maxs[0] = (vec_t) mod->maxs[1] = psprite->maxwidth/2;
+	mod->mins[2] = (vec_t) -psprite->maxheight/2;
+	mod->maxs[2] = (vec_t) psprite->maxheight/2;
 	
 //
 // load the frames

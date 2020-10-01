@@ -268,14 +268,14 @@ void Sys_DebugLog(char *file, char *fmt, ...)
     fclose(fp);
 }
 
-double Sys_FloatTime (void)
+float Sys_FloatTime (void)
 {
 	static int starttime = 0;
 
 	if ( ! starttime )
 		starttime = clock();
 
-	return (clock()-starttime)*1.0/1024;
+	return (clock()-starttime)*1.0f/1024;
 }
 
 // =======================================================================
@@ -300,7 +300,7 @@ byte *Sys_ZoneBase (int *size)
 		while (*QUAKEOPT)
 			if (tolower(*QUAKEOPT++) == 'm')
 			{
-				*size = atof(QUAKEOPT) * 1024*1024;
+				*size = (int)((float)atof(QUAKEOPT) * 1024*1024);
 				break;
 			}
 	}
@@ -330,7 +330,7 @@ void moncontrol(int x)
 int main (int c, char **v)
 {
 
-	double		time, oldtime, newtime;
+	float		time, oldtime, newtime;
 	quakeparms_t parms;
 	static int frame;
 
@@ -354,7 +354,7 @@ int main (int c, char **v)
 
 	Cvar_RegisterVariable (&sys_nostdout);
 
-    oldtime = Sys_FloatTime () - 0.1;
+    oldtime = Sys_FloatTime () - 0.1f;
     while (1)
     {
 // find time spent rendering last frame

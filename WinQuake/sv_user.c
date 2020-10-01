@@ -63,8 +63,8 @@ void SV_SetIdealPitch (void)
 		return;
 		
 	angleval = sv_player->v.angles[YAW] * M_PI*2 / 360;
-	sinval = sin(angleval);
-	cosval = cos(angleval);
+	sinval = sinf(angleval);
+	cosval = cosf(angleval);
 
 	for (i=0 ; i<MAX_FORWARD ; i++)
 	{
@@ -129,7 +129,7 @@ void SV_UserFriction (void)
 	
 	vel = velocity;
 	
-	speed = sqrt(vel[0]*vel[0] +vel[1]*vel[1]);
+	speed = sqrtf(vel[0]*vel[0] +vel[1]*vel[1]);
 	if (!speed)
 		return;
 
@@ -249,7 +249,7 @@ void SV_WaterMove (void)
 		VectorScale (wishvel, sv_maxspeed.value/wishspeed, wishvel);
 		wishspeed = sv_maxspeed.value;
 	}
-	wishspeed *= 0.7;
+	wishspeed *= 0.7f;
 
 //
 // water friction

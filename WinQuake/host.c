@@ -37,10 +37,10 @@ quakeparms_t host_parms;
 
 qboolean	host_initialized;		// true if into command execution
 
-double		host_frametime;
-double		host_time;
-double		realtime;				// without any filtering or bounding
-double		oldrealtime;			// last frame run
+float		host_frametime;
+float		host_time;
+float		realtime;				// without any filtering or bounding
+float		oldrealtime;			// last frame run
 int			host_framecount;
 
 int			host_hunklevel;
@@ -404,7 +404,7 @@ void Host_ShutdownServer(qboolean crash)
 	int		count;
 	sizebuf_t	buf;
 	char		message[4];
-	double	start;
+	float	start;
 
 	if (!sv.active)
 		return;
@@ -508,10 +508,10 @@ qboolean Host_FilterTime (float time)
 		host_frametime = host_framerate.value;
 	else
 	{	// don't allow really long or short frames
-		if (host_frametime > 0.1)
-			host_frametime = 0.1;
-		if (host_frametime < 0.001)
-			host_frametime = 0.001;
+		if (host_frametime > 0.1f)
+			host_frametime = 0.1f;
+		if (host_frametime < 0.001f)
+			host_frametime = 0.001f;
 	}
 	
 	return true;
@@ -578,9 +578,9 @@ Runs all active servers
 */
 void _Host_Frame (float time)
 {
-	static double		time1 = 0;
-	static double		time2 = 0;
-	static double		time3 = 0;
+	static float		time1 = 0;
+	static float		time2 = 0;
+	static float		time3 = 0;
 	int			pass1, pass2, pass3;
 
 	if (setjmp (host_abortserver) )
@@ -661,10 +661,10 @@ void _Host_Frame (float time)
 
 	if (host_speeds.value)
 	{
-		pass1 = (time1 - time3)*1000;
+		pass1 = (int) ((time1 - time3)*1000);
 		time3 = Sys_FloatTime ();
-		pass2 = (time2 - time1)*1000;
-		pass3 = (time3 - time2)*1000;
+		pass2 = (int) ((time2 - time1)*1000);
+		pass3 = (int) ((time3 - time2)*1000);
 		Con_Printf ("%3i tot %3i server %3i gfx %3i snd\n",
 					pass1+pass2+pass3, pass1, pass2, pass3);
 	}
@@ -674,8 +674,8 @@ void _Host_Frame (float time)
 
 void Host_Frame (float time)
 {
-	double	time1, time2;
-	static double	timetotal;
+	float	time1, time2;
+	static float	timetotal;
 	static int		timecount;
 	int		i, c, m;
 
@@ -695,7 +695,7 @@ void Host_Frame (float time)
 	if (timecount < 1000)
 		return;
 
-	m = timetotal*1000/timecount;
+	m = (int)( timetotal*1000/timecount);
 	timecount = 0;
 	timetotal = 0;
 	c = 0;

@@ -65,10 +65,10 @@ void PerpendicularVector( vec3_t dst, const vec3_t src )
 	*/
 	for ( pos = 0, i = 0; i < 3; i++ )
 	{
-		if ( fabs( src[i] ) < minelem )
+		if ( fabsf( src[i] ) < minelem )
 		{
 			pos = i;
-			minelem = fabs( src[i] );
+			minelem = fabsf( src[i] );
 		}
 	}
 	tempvec[0] = tempvec[1] = tempvec[2] = 0.0F;
@@ -302,8 +302,6 @@ void CrossProduct (vec3_t v1, vec3_t v2, vec3_t cross)
 	cross[2] = v1[0]*v2[1] - v1[1]*v2[0];
 }
 
-double sqrt(double x);
-
 vec_t Length(vec3_t v)
 {
 	int		i;
@@ -432,11 +430,11 @@ quotient must fit in 32 bits.
 ====================
 */
 
-void FloorDivMod (double numer, double denom, int *quotient,
+void FloorDivMod (float numer, float denom, int *quotient,
 		int *rem)
 {
 	int		q, r;
-	double	x;
+	float	x;
 
 	if (denom <= 0.0)
 		Sys_Error ("FloorDivMod: bad denominator %d\n", denom);
@@ -444,18 +442,18 @@ void FloorDivMod (double numer, double denom, int *quotient,
 	if (numer >= 0.0)
 	{
 
-		x = floor(numer / denom);
+		x = floorf(numer / denom);
 		q = (int)x;
-		r = (int)floor(numer - (x * denom));
+		r = (int)floorf(numer - (x * denom));
 	}
 	else
 	{
 	//
 	// perform operations with positive values, and fix mod to make floor-based
 	//
-		x = floor(-numer / denom);
+		x = floorf(-numer / denom);
 		q = -(int)x;
-		r = (int)floor(-numer - (x * denom));
+		r = (int)floorf(-numer - (x * denom));
 		if (r != 0)
 		{
 			q--;
@@ -487,23 +485,4 @@ int GreatestCommonDivisor (int i1, int i2)
 			return (i2);
 		return GreatestCommonDivisor (i1, i2 % i1);
 	}
-}
-
-// TODO: move to nonintel.c
-
-/*
-===================
-Invert24To16
-
-Inverts an 8.24 value to a 16.16 value
-====================
-*/
-
-fixed16_t Invert24To16(fixed16_t val)
-{
-	if (val < 256)
-		return (0xFFFFFFFF);
-
-	return (fixed16_t)
-			(((double)0x10000 * (double)0x1000000 / (double)val) + 0.5);
 }

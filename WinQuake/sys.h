@@ -49,7 +49,7 @@ void Sys_Printf (char *fmt, ...);
 
 void Sys_Quit (void);
 
-double Sys_FloatTime (void);
+float Sys_FloatTime (void);
 
 char *Sys_ConsoleInput (void);
 

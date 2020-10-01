@@ -103,7 +103,7 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 		if (transformed[2] < NEAR_CLIP)
 			transformed[2] = NEAR_CLIP;
 	
-		lzi0 = 1.0 / transformed[2];
+		lzi0 = 1.0f / transformed[2];
 	
 	// FIXME: build x/yscale into transform?
 		scale = xscale * lzi0;
@@ -120,7 +120,7 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 		if (v0 > r_refdef.fvrectbottom_adj)
 			v0 = r_refdef.fvrectbottom_adj;
 	
-		ceilv0 = (int) ceil(v0);
+		ceilv0 = (int) ceilf(v0);
 	}
 
 	world = &pv1->position[0];
@@ -132,7 +132,7 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 	if (transformed[2] < NEAR_CLIP)
 		transformed[2] = NEAR_CLIP;
 
-	r_lzi1 = 1.0 / transformed[2];
+	r_lzi1 = 1.0f / transformed[2];
 
 	scale = xscale * r_lzi1;
 	r_u1 = (xcenter + scale*transformed[0]);
@@ -160,7 +160,7 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 
 	r_emitted = 1;
 
-	r_ceilv1 = (int) ceil(r_v1);
+	r_ceilv1 = (int) ceilf(r_v1);
 
 
 // create the edge
@@ -557,7 +557,7 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 // FIXME: cache this?
 	TransformVector (pplane->normal, p_normal);
 // FIXME: cache this?
-	distinv = 1.0 / (pplane->dist - DotProduct (modelorg, pplane->normal));
+	distinv = 1.0f / (pplane->dist - DotProduct (modelorg, pplane->normal));
 
 	surface_p->d_zistepu = p_normal[0] * xscaleinv * distinv;
 	surface_p->d_zistepv = -p_normal[1] * yscaleinv * distinv;
@@ -672,7 +672,7 @@ void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf)
 // FIXME: cache this?
 	TransformVector (pplane->normal, p_normal);
 // FIXME: cache this?
-	distinv = 1.0 / (pplane->dist - DotProduct (modelorg, pplane->normal));
+	distinv = 1.0f / (pplane->dist - DotProduct (modelorg, pplane->normal));
 
 	surface_p->d_zistepu = p_normal[0] * xscaleinv * distinv;
 	surface_p->d_zistepv = -p_normal[1] * yscaleinv * distinv;
@@ -829,7 +829,7 @@ void R_RenderPoly (msurface_t *fa, int clipflags)
 		if (transformed[2] < NEAR_CLIP)
 			transformed[2] = NEAR_CLIP;
 
-		lzi = 1.0 / transformed[2];
+		lzi = 1.0f / transformed[2];
 
 		if (lzi > r_nearzi)	// for mipmap finding
 			r_nearzi = lzi;

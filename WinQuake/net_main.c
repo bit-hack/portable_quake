@@ -45,7 +45,7 @@ static qboolean	listening = false;
 qboolean	slistInProgress = false;
 qboolean	slistSilent = false;
 qboolean	slistLocal = true;
-static double	slistStartTime;
+static float	slistStartTime;
 static int		slistLastShown;
 
 static void Slist_Send(void);
@@ -82,9 +82,9 @@ cvar_t	config_modem_hangup = {"_config_modem_hangup", "AT H", true};
 int	net_driverlevel;
 
 
-double			net_time;
+float			net_time;
 
-double SetNetTime(void)
+float SetNetTime(void)
 {
 	net_time = Sys_FloatTime();
 	return net_time;
@@ -297,8 +297,8 @@ void NET_Slist_f (void)
 	slistInProgress = true;
 	slistStartTime = Sys_FloatTime();
 
-	SchedulePollProcedure(&slistSendProcedure, 0.0);
-	SchedulePollProcedure(&slistPollProcedure, 0.1);
+	SchedulePollProcedure(&slistSendProcedure, 0.0f);
+	SchedulePollProcedure(&slistPollProcedure, 0.1f);
 
 	hostCacheCount = 0;
 }
@@ -336,7 +336,7 @@ static void Slist_Poll(void)
 
 	if ((Sys_FloatTime() - slistStartTime) < 1.5)
 	{
-		SchedulePollProcedure(&slistPollProcedure, 0.1);
+		SchedulePollProcedure(&slistPollProcedure, 0.1f);
 		return;
 	}
 
@@ -625,7 +625,7 @@ qboolean NET_CanSendMessage (qsocket_t *sock)
 
 int NET_SendToAll(sizebuf_t *data, int blocktime)
 {
-	double		start;
+	float		start;
 	int			i;
 	int			count = 0;
 	qboolean	state1 [MAX_SCOREBOARD];
@@ -841,7 +841,7 @@ void NET_Poll(void)
 }
 
 
-void SchedulePollProcedure(PollProcedure *proc, double timeOffset)
+void SchedulePollProcedure(PollProcedure *proc, float timeOffset)
 {
 	PollProcedure *pp, *prev;
 

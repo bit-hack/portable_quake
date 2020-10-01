@@ -208,14 +208,14 @@ void D_SpriteScanLeftEdge (void)
 	if (lmaxindex == 0)
 		lmaxindex = r_spritedesc.nump;
 
-	vtop = ceil (r_spritedesc.pverts[i].v);
+	vtop = ceilf(r_spritedesc.pverts[i].v);
 
 	do
 	{
 		pvert = &r_spritedesc.pverts[i];
 		pnext = pvert - 1;
 
-		vbottom = ceil (pnext->v);
+		vbottom = ceilf(pnext->v);
 
 		if (vtop < vbottom)
 		{
@@ -270,7 +270,7 @@ void D_SpriteScanRightEdge (void)
 	if (vvert > r_refdef.fvrectbottom_adj)
 		vvert = r_refdef.fvrectbottom_adj;
 
-	vtop = ceil (vvert);
+	vtop = ceilf(vvert);
 
 	do
 	{

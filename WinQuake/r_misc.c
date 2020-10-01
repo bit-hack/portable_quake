@@ -78,7 +78,7 @@ void R_TimeRefresh_f (void)
 	start = Sys_FloatTime ();
 	for (i=0 ; i<128 ; i++)
 	{
-		r_refdef.viewangles[1] = i/128.0*360.0;
+		r_refdef.viewangles[1] = i/128.0f*360.0f;
 
 		VID_LockBuffer ();
 
@@ -157,13 +157,9 @@ void R_TimeGraph (void)
 	
 	r_time2 = Sys_FloatTime ();
 
-	a = (r_time2-r_time1)/0.01;
-//a = fabs(mouse_y * 0.05);
-//a = (int)((r_refdef.vieworg[2] + 1024)/1)%(int)r_graphheight.value;
-//a = fabs(velocity[0])/20;
-//a = ((int)fabs(origin[0])/8)%20;
-//a = (cl.idealpitch + 30)/5;
-	r_timings[timex] = a;
+	a = (r_time2-r_time1)/0.01f;
+
+  r_timings[timex] = a;
 	a = timex;
 
 	if (r_refdef.vrect.width <= MAX_TIMINGS)

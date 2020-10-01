@@ -130,7 +130,7 @@ void D_CalcGradients (msurface_t *pface)
 
 	pplane = pface->plane;
 
-	mipscale = 1.0 / (float)(1 << miplevel);
+	mipscale = 1.0f / (float)(1 << miplevel);
 
 	TransformVector (pface->texinfo->vecs[0], p_saxis);
 	TransformVector (pface->texinfo->vecs[1], p_taxis);
@@ -228,7 +228,7 @@ void D_DrawSurfaces (void)
 			// effectively at infinity distance from the viewpoint
 				d_zistepu = 0;
 				d_zistepv = 0;
-				d_ziorigin = -0.9;
+				d_ziorigin = -0.9f;
 
 				D_DrawSolidSurface (s, (int)r_clearcolor.value & 0xFF);
 				D_DrawZSpans (s->spans);
