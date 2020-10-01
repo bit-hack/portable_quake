@@ -807,6 +807,7 @@ void NET_Init (void)
 	int			controlSocket;
 	qsocket_t	*s;
 
+#if 0
 	if (COM_CheckParm("-playback"))
 	{
 		net_numdrivers = 1;
@@ -815,6 +816,7 @@ void NET_Init (void)
 
 	if (COM_CheckParm("-record"))
 		recording = true;
+#endif
 
 	i = COM_CheckParm ("-port");
 	if (!i)

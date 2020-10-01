@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <ddraw.h>
 #include <dsound.h>
 #ifndef GLQUAKE
-#include <mgraph.h>
+//#include <mgraph.h>
 #endif
 #endif
 
@@ -56,7 +56,7 @@ void	VID_UnlockBuffer (void);
 
 typedef enum {MS_WINDOWED, MS_FULLSCREEN, MS_FULLDIB, MS_UNINIT} modestate_t;
 
-extern modestate_t	modestate;
+//extern modestate_t	modestate;
 
 extern HWND			mainwindow;
 extern qboolean		ActiveApp, Minimized;

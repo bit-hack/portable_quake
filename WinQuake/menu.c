@@ -1053,10 +1053,12 @@ void M_Menu_Options_f (void)
 	m_entersound = true;
 
 #ifdef _WIN32
+#if 0
 	if ((options_cursor == 13) && (modestate != MS_WINDOWED))
 	{
 		options_cursor = 0;
 	}
+#endif
 #endif
 }
 
@@ -1138,9 +1140,11 @@ void M_AdjustSliders (int dir)
 		break;
 
 #ifdef _WIN32
+#if 0
 	case 13:	// _windowed_mouse
 		Cvar_SetValue ("_windowed_mouse", !_windowed_mouse.value);
 		break;
+#endif
 #endif
 	}
 }
@@ -1224,11 +1228,13 @@ void M_Options_Draw (void)
 		M_Print (16, 128, "         Video Options");
 
 #ifdef _WIN32
+#if 0
 	if (modestate == MS_WINDOWED)
 	{
 		M_Print (16, 136, "             Use Mouse");
 		M_DrawCheckbox (220, 136, _windowed_mouse.value);
 	}
+#endif
 #endif
 
 // cursor
@@ -1299,6 +1305,7 @@ void M_Options_Key (int k)
 	}
 
 #ifdef _WIN32
+#if 0
 	if ((options_cursor == 13) && (modestate != MS_WINDOWED))
 	{
 		if (k == K_UPARROW)
@@ -1306,6 +1313,7 @@ void M_Options_Key (int k)
 		else
 			options_cursor = 0;
 	}
+#endif
 #endif
 }
 

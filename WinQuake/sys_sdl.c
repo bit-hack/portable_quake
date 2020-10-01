@@ -1,16 +1,20 @@
-#include <unistd.h>
+//#include <unistd.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <sys/time.h>
+//#include <sys/time.h>
 #include <sys/types.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <fcntl.h>
+
+#include <assert.h>
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+
 #ifndef __WIN32__
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -436,7 +440,7 @@ Sys_MakeCodeWriteable
 */
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
-
+#if 0
 	int r;
 	unsigned long addr;
 	int psize = getpagesize();
@@ -449,6 +453,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 
 	if (r < 0)
     		Sys_Error("Protection change failed\n");
-
+#endif
+  assert(!"toto");
 }
 
