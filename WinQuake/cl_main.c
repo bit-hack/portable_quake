@@ -274,38 +274,6 @@ Debugging tool, just flashes the screen
 */
 void SetPal (int i)
 {
-#if 0
-	static int old;
-	byte	pal[768];
-	int		c;
-	
-	if (i == old)
-		return;
-	old = i;
-
-	if (i==0)
-		VID_SetPalette (host_basepal);
-	else if (i==1)
-	{
-		for (c=0 ; c<768 ; c+=3)
-		{
-			pal[c] = 0;
-			pal[c+1] = 255;
-			pal[c+2] = 0;
-		}
-		VID_SetPalette (pal);
-	}
-	else
-	{
-		for (c=0 ; c<768 ; c+=3)
-		{
-			pal[c] = 0;
-			pal[c+1] = 0;
-			pal[c+2] = 255;
-		}
-		VID_SetPalette (pal);
-	}
-#endif
 }
 
 /*
@@ -533,10 +501,7 @@ void CL_RelinkEntities (void)
 
 		if (ent->effects & EF_BRIGHTFIELD)
 			R_EntityParticles (ent);
-#ifdef QUAKE2
-		if (ent->effects & EF_DARKFIELD)
-			R_DarkFieldParticles (ent);
-#endif
+
 		if (ent->effects & EF_MUZZLEFLASH)
 		{
 			vec3_t		fv, rv, uv;
@@ -566,23 +531,6 @@ void CL_RelinkEntities (void)
 			dl->radius = 200 + (rand()&31);
 			dl->die = cl.time + 0.001;
 		}
-#ifdef QUAKE2
-		if (ent->effects & EF_DARKLIGHT)
-		{			
-			dl = CL_AllocDlight (i);
-			VectorCopy (ent->origin,  dl->origin);
-			dl->radius = 200.0 + (rand()&31);
-			dl->die = cl.time + 0.001;
-			dl->dark = true;
-		}
-		if (ent->effects & EF_LIGHT)
-		{			
-			dl = CL_AllocDlight (i);
-			VectorCopy (ent->origin,  dl->origin);
-			dl->radius = 200;
-			dl->die = cl.time + 0.001;
-		}
-#endif
 
 		if (ent->model->flags & EF_GIB)
 			R_RocketTrail (oldorg, ent->origin, 2);
@@ -610,10 +558,6 @@ void CL_RelinkEntities (void)
 		if (i == cl.viewentity && !chase_active.value)
 			continue;
 
-#ifdef QUAKE2
-		if ( ent->effects & EF_NODRAW )
-			continue;
-#endif
 		if (cl_numvisedicts < MAX_VISEDICTS)
 		{
 			cl_visedicts[cl_numvisedicts] = ent;

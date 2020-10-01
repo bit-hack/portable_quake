@@ -19,13 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // console.c
 
-#ifdef NeXT
-#include <libc.h>
-#endif
-#ifndef _MSC_VER
-#include <unistd.h>
-#endif
-#include <fcntl.h>
 #include "quakedef.h"
 
 int 		con_linewidth;
@@ -212,11 +205,12 @@ Con_Init
 void Con_Init (void)
 {
 #define MAXGAMEDIRLEN	1000
-	char	temp[MAXGAMEDIRLEN+1];
+//	char	temp[MAXGAMEDIRLEN+1];
 	char	*t2 = "/qconsole.log";
 
 	con_debuglog = COM_CheckParm("-condebug");
 
+#if 0
 	if (con_debuglog)
 	{
 		if (strlen (com_gamedir) < (MAXGAMEDIRLEN - strlen (t2)))
@@ -225,6 +219,7 @@ void Con_Init (void)
 			unlink (temp);
 		}
 	}
+#endif
 
 	con_text = Hunk_AllocName (CON_TEXTSIZE, "context");
 	Q_memset (con_text, ' ', CON_TEXTSIZE);
@@ -354,16 +349,6 @@ Con_DebugLog
 */
 void Con_DebugLog(char *file, char *fmt, ...)
 {
-    va_list argptr; 
-    static char data[1024];
-    int fd;
-    
-    va_start(argptr, fmt);
-    vsprintf(data, fmt, argptr);
-    va_end(argptr);
-    fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
-    write(fd, data, strlen(data));
-    close(fd);
 }
 
 

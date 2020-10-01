@@ -19,10 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "quakedef.h"
 
-#ifdef _WIN32
-#include "winquake.h"
-#endif
-
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
@@ -913,11 +909,7 @@ void M_Net_Draw (void)
 	}
 	else
 	{
-#ifdef _WIN32
 		p = NULL;
-#else
-		p = Draw_CachePic ("gfx/dim_modm.lmp");
-#endif
 	}
 
 	if (p)
@@ -931,11 +923,7 @@ void M_Net_Draw (void)
 	}
 	else
 	{
-#ifdef _WIN32
 		p = NULL;
-#else
-		p = Draw_CachePic ("gfx/dim_drct.lmp");
-#endif
 	}
 
 	if (p)
@@ -1036,11 +1024,7 @@ again:
 //=============================================================================
 /* OPTIONS MENU */
 
-#ifdef _WIN32
 #define	OPTIONS_ITEMS	14
-#else
-#define	OPTIONS_ITEMS	13
-#endif
 
 #define	SLIDER_RANGE	10
 
@@ -1051,15 +1035,6 @@ void M_Menu_Options_f (void)
 	key_dest = key_menu;
 	m_state = m_options;
 	m_entersound = true;
-
-#ifdef _WIN32
-#if 0
-	if ((options_cursor == 13) && (modestate != MS_WINDOWED))
-	{
-		options_cursor = 0;
-	}
-#endif
-#endif
 }
 
 
@@ -1078,15 +1053,15 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("viewsize", scr_viewsize.value);
 		break;
 	case 4:	// gamma
-		v_gamma.value -= dir * 0.05;
-		if (v_gamma.value < 0.5)
-			v_gamma.value = 0.5;
+		v_gamma.value -= dir * 0.05f;
+		if (v_gamma.value < 0.5f)
+			v_gamma.value = 0.5f;
 		if (v_gamma.value > 1)
 			v_gamma.value = 1;
 		Cvar_SetValue ("gamma", v_gamma.value);
 		break;
 	case 5:	// mouse speed
-		sensitivity.value += dir * 0.5;
+		sensitivity.value += dir * 0.5f;
 		if (sensitivity.value < 1)
 			sensitivity.value = 1;
 		if (sensitivity.value > 11)
@@ -1094,11 +1069,7 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("sensitivity", sensitivity.value);
 		break;
 	case 6:	// music volume
-#ifdef _WIN32
-		bgmvolume.value += dir * 1.0;
-#else
-		bgmvolume.value += dir * 0.1;
-#endif
+		bgmvolume.value += dir * 1.0f;
 		if (bgmvolume.value < 0)
 			bgmvolume.value = 0;
 		if (bgmvolume.value > 1)
@@ -1106,7 +1077,7 @@ void M_AdjustSliders (int dir)
 		Cvar_SetValue ("bgmvolume", bgmvolume.value);
 		break;
 	case 7:	// sfx volume
-		volume.value += dir * 0.1;
+		volume.value += dir * 0.1f;
 		if (volume.value < 0)
 			volume.value = 0;
 		if (volume.value > 1)
@@ -1138,14 +1109,6 @@ void M_AdjustSliders (int dir)
 	case 11:	// lookstrafe
 		Cvar_SetValue ("lookstrafe", !lookstrafe.value);
 		break;
-
-#ifdef _WIN32
-#if 0
-	case 13:	// _windowed_mouse
-		Cvar_SetValue ("_windowed_mouse", !_windowed_mouse.value);
-		break;
-#endif
-#endif
 	}
 }
 
@@ -1167,12 +1130,6 @@ void M_DrawSlider (int x, int y, float range)
 
 void M_DrawCheckbox (int x, int y, int on)
 {
-#if 0
-	if (on)
-		M_DrawCharacter (x, y, 131);
-	else
-		M_DrawCharacter (x, y, 129);
-#endif
 	if (on)
 		M_Print (x, y, "on");
 	else
@@ -1197,7 +1154,7 @@ void M_Options_Draw (void)
 	M_DrawSlider (220, 56, r);
 
 	M_Print (16, 64, "            Brightness");
-	r = (1.0 - v_gamma.value) / 0.5;
+	r = (1.0 - v_gamma.value) / 0.5f;
 	M_DrawSlider (220, 64, r);
 
 	M_Print (16, 72, "           Mouse Speed");
@@ -1226,16 +1183,6 @@ void M_Options_Draw (void)
 
 	if (vid_menudrawfn)
 		M_Print (16, 128, "         Video Options");
-
-#ifdef _WIN32
-#if 0
-	if (modestate == MS_WINDOWED)
-	{
-		M_Print (16, 136, "             Use Mouse");
-		M_DrawCheckbox (220, 136, _windowed_mouse.value);
-	}
-#endif
-#endif
 
 // cursor
 	M_DrawCharacter (200, 32 + options_cursor*8, 12+((int)(realtime*4)&1));
@@ -1303,18 +1250,6 @@ void M_Options_Key (int k)
 		else
 			options_cursor = 0;
 	}
-
-#ifdef _WIN32
-#if 0
-	if ((options_cursor == 13) && (modestate != MS_WINDOWED))
-	{
-		if (k == K_UPARROW)
-			options_cursor = 12;
-		else
-			options_cursor = 0;
-	}
-#endif
-#endif
 }
 
 //=============================================================================
@@ -1588,52 +1523,6 @@ int		msgNumber;
 int		m_quit_prevstate;
 qboolean	wasInMenus;
 
-#ifndef	_WIN32
-char *quitMessage [] = 
-{
-/* .........1.........2.... */
-  "  Are you gonna quit    ",
-  "  this game just like   ",
-  "   everything else?     ",
-  "                        ",
- 
-  " Milord, methinks that  ",
-  "   thou art a lowly     ",
-  " quitter. Is this true? ",
-  "                        ",
-
-  " Do I need to bust your ",
-  "  face open for trying  ",
-  "        to quit?        ",
-  "                        ",
-
-  " Man, I oughta smack you",
-  "   for trying to quit!  ",
-  "     Press Y to get     ",
-  "      smacked out.      ",
- 
-  " Press Y to quit like a ",
-  "   big loser in life.   ",
-  "  Press N to stay proud ",
-  "    and successful!     ",
- 
-  "   If you press Y to    ",
-  "  quit, I will summon   ",
-  "  Satan all over your   ",
-  "      hard drive!       ",
- 
-  "  Um, Asmodeus dislikes ",
-  " his children trying to ",
-  " quit. Press Y to return",
-  "   to your Tinkertoys.  ",
- 
-  "  If you quit now, I'll ",
-  "  throw a blanket-party ",
-  "   for you next time!   ",
-  "                        "
-};
-#endif
-
 void M_Menu_Quit_f (void)
 {
 	if (m_state == m_quit)
@@ -1689,7 +1578,6 @@ void M_Quit_Draw (void)
 		m_state = m_quit;
 	}
 
-#ifdef _WIN32
 	M_DrawTextBox (0, 0, 38, 23);
 	M_PrintWhite (16, 12,  "  Quake version 1.09 by id Software\n\n");
 	M_PrintWhite (16, 28,  "Programming        Art \n");
@@ -1712,13 +1600,6 @@ void M_Quit_Draw (void)
 	M_PrintWhite (16, 164, "registered trademark licensed to\n");
 	M_PrintWhite (16, 172, "Nothing Interactive, Inc. All rights\n");
 	M_PrintWhite (16, 180, "reserved. Press y to exit\n");
-#else
-	M_DrawTextBox (56, 76, 24, 4);
-	M_Print (64, 84,  quitMessage[msgNumber*4+0]);
-	M_Print (64, 92,  quitMessage[msgNumber*4+1]);
-	M_Print (64, 100, quitMessage[msgNumber*4+2]);
-	M_Print (64, 108, quitMessage[msgNumber*4+3]);
-#endif
 }
 
 //=============================================================================

@@ -85,11 +85,6 @@ void PerpendicularVector( vec3_t dst, const vec3_t src )
 	VectorNormalize( dst );
 }
 
-#ifdef _WIN32
-#pragma optimize( "", off )
-#endif
-
-
 void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees )
 {
 	float	m[3][3];
@@ -131,10 +126,10 @@ void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, 
 	memset( zrot, 0, sizeof( zrot ) );
 	zrot[0][0] = zrot[1][1] = zrot[2][2] = 1.0F;
 
-	zrot[0][0] = cos( DEG2RAD( degrees ) );
-	zrot[0][1] = sin( DEG2RAD( degrees ) );
-	zrot[1][0] = -sin( DEG2RAD( degrees ) );
-	zrot[1][1] = cos( DEG2RAD( degrees ) );
+	zrot[0][0] = cosf( DEG2RAD( degrees ) );
+	zrot[0][1] = sinf( DEG2RAD( degrees ) );
+	zrot[1][0] = -sinf( DEG2RAD( degrees ) );
+	zrot[1][1] = cosf( DEG2RAD( degrees ) );
 
 	R_ConcatRotations( m, zrot, tmpmat );
 	R_ConcatRotations( tmpmat, im, rot );
@@ -145,22 +140,13 @@ void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, 
 	}
 }
 
-#ifdef _WIN32
-#pragma optimize( "", on )
-#endif
 
 /*-----------------------------------------------------------------*/
 
 
 float	anglemod(float a)
 {
-#if 0
-	if (a >= 0)
-		a -= 360*(int)(a/360);
-	else
-		a += 360*( 1 + (int)(-a/360) );
-#endif
-	a = (360.0/65536) * ((int)(a*(65536/360.0)) & 65535);
+	a = (360.0f/65536) * ((int)(a*(65536/360.0f)) & 65535);
 	return a;
 }
 
@@ -188,19 +174,6 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 	float	dist1, dist2;
 	int		sides;
 
-#if 0	// this is done by the BOX_ON_PLANE_SIDE macro before calling this
-		// function
-// fast axial cases
-	if (p->type < 3)
-	{
-		if (p->dist <= emins[p->type])
-			return 1;
-		if (p->dist >= emaxs[p->type])
-			return 2;
-		return 3;
-	}
-#endif
-	
 // general case
 	switch (p->signbits)
 	{
@@ -242,43 +215,11 @@ dist2 = p->normal[0]*emaxs[0] + p->normal[1]*emaxs[1] + p->normal[2]*emaxs[2];
 		break;
 	}
 
-#if 0
-	int		i;
-	vec3_t	corners[2];
-
-	for (i=0 ; i<3 ; i++)
-	{
-		if (plane->normal[i] < 0)
-		{
-			corners[0][i] = emins[i];
-			corners[1][i] = emaxs[i];
-		}
-		else
-		{
-			corners[1][i] = emins[i];
-			corners[0][i] = emaxs[i];
-		}
-	}
-	dist = DotProduct (plane->normal, corners[0]) - plane->dist;
-	dist2 = DotProduct (plane->normal, corners[1]) - plane->dist;
-	sides = 0;
-	if (dist1 >= 0)
-		sides = 1;
-	if (dist2 < 0)
-		sides |= 2;
-
-#endif
-
 	sides = 0;
 	if (dist1 >= p->dist)
 		sides = 1;
 	if (dist2 < p->dist)
 		sides |= 2;
-
-#ifdef PARANOID
-if (sides == 0)
-	Sys_Error ("BoxOnPlaneSide: sides==0");
-#endif
 
 	return sides;
 }
@@ -289,14 +230,14 @@ void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 	float		sr, sp, sy, cr, cp, cy;
 	
 	angle = angles[YAW] * (M_PI*2 / 360);
-	sy = sin(angle);
-	cy = cos(angle);
+	sy = sinf(angle);
+	cy = cosf(angle);
 	angle = angles[PITCH] * (M_PI*2 / 360);
-	sp = sin(angle);
-	cp = cos(angle);
+	sp = sinf(angle);
+	cp = cosf(angle);
 	angle = angles[ROLL] * (M_PI*2 / 360);
-	sr = sin(angle);
-	cr = cos(angle);
+	sr = sinf(angle);
+	cr = cosf(angle);
 
 	forward[0] = cp*cy;
 	forward[1] = cp*sy;
@@ -371,7 +312,7 @@ vec_t Length(vec3_t v)
 	length = 0;
 	for (i=0 ; i< 3 ; i++)
 		length += v[i]*v[i];
-	length = sqrt (length);		// FIXME
+	length = sqrtf (length);		// FIXME
 
 	return length;
 }
@@ -381,7 +322,7 @@ float VectorNormalize (vec3_t v)
 	float	length, ilength;
 
 	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
-	length = sqrt (length);		// FIXME
+	length = sqrtf (length);		// FIXME
 
 	if (length)
 	{
@@ -497,14 +438,8 @@ void FloorDivMod (double numer, double denom, int *quotient,
 	int		q, r;
 	double	x;
 
-#ifndef PARANOID
 	if (denom <= 0.0)
 		Sys_Error ("FloorDivMod: bad denominator %d\n", denom);
-
-//	if ((floor(numer) != numer) || (floor(denom) != denom))
-//		Sys_Error ("FloorDivMod: non-integer numer or denom %f %f\n",
-//				numer, denom);
-#endif
 
 	if (numer >= 0.0)
 	{

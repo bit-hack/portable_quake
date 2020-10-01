@@ -27,7 +27,10 @@ static int mouse_oldbuttonstate = 0;
 void (*vid_menudrawfn)(void) = NULL;
 void (*vid_menukeyfn)(int key) = NULL;
 
-void    VID_SetPalette (unsigned char *palette)
+void VID_HandlePause(qboolean pause) {
+}
+
+void   VID_SetPalette (unsigned char *palette)
 {
     int i;
     SDL_Color colors[256];
@@ -51,12 +54,10 @@ void    VID_Init (unsigned char *palette)
     int pnum, chunk;
     byte *cache;
     int cachesize;
-    Uint8 video_bpp;
-    Uint16 video_w, video_h;
     Uint32 flags;
 
     // Load the SDL library
-    if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_CDROM) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
         Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
 
     // Set up display mode (width and height)
@@ -87,16 +88,18 @@ void    VID_Init (unsigned char *palette)
     // now know everything we need to know about the buffer
     VGA_width = vid.conwidth = vid.width;
     VGA_height = vid.conheight = vid.height;
-    vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
+    vid.aspect = ((float)vid.height / (float)vid.width) * (320.0f / 240.0f);
     vid.numpages = 1;
     vid.colormap = host_colormap;
     vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
+
+    // here we set the display target
     VGA_pagebase = vid.buffer = screen->pixels;
     VGA_rowbytes = vid.rowbytes = screen->pitch;
     vid.conbuffer = vid.buffer;
     vid.conrowbytes = vid.rowbytes;
     vid.direct = 0;
-    
+
     // allocate z buffer and surface cache
     chunk = vid.width * vid.height * sizeof (*d_pzbuffer);
     cachesize = D_SurfaceCacheForRes (vid.width, vid.height);
@@ -106,8 +109,7 @@ void    VID_Init (unsigned char *palette)
         Sys_Error ("Not enough memory for video mode\n");
 
     // initialize the cache memory 
-        cache = (byte *) d_pzbuffer
-                + vid.width * vid.height * sizeof (*d_pzbuffer);
+    cache = (byte *) d_pzbuffer + vid.width * vid.height * sizeof (*d_pzbuffer);
     D_InitCaches (cache, cachesize);
 
     // initialize the mouse
@@ -290,25 +292,9 @@ void Sys_SendKeyEvents(void)
                 Key_Event(sym, state);
                 break;
 
-#if 0
-            case SDL_MOUSEMOTION:
-                if ( (event.motion.x != (vid.width/2)) ||
-                     (event.motion.y != (vid.height/2)) ) {
-                    mouse_x = event.motion.xrel*10;
-                    mouse_y = event.motion.yrel*10;
-                    if ( (event.motion.x < ((vid.width/2)-(vid.width/4))) ||
-                         (event.motion.x > ((vid.width/2)+(vid.width/4))) ||
-                         (event.motion.y < ((vid.height/2)-(vid.height/4))) ||
-                         (event.motion.y > ((vid.height/2)+(vid.height/4))) ) {
-                        SDL_WarpMouse(vid.width/2, vid.height/2);
-                    }
-                }
-                break;
-#endif
-
             case SDL_QUIT:
                 CL_Disconnect ();
-                Host_ShutdownServer(false);        
+                Host_ShutdownServer(false);
                 Sys_Quit ();
                 break;
             default:

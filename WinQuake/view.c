@@ -86,8 +86,8 @@ float V_CalcRoll (vec3_t angles, vec3_t velocity)
 	
 	AngleVectors (angles, forward, right, up);
 	side = DotProduct (velocity, right);
-	sign = side < 0 ? -1 : 1;
-	side = fabs(side);
+	sign = side < 0.f ? -1.f : 1.f;
+	side = fabsf(side);
 	
 	value = cl_rollangle.value;
 //	if (cl.inwater)
@@ -119,20 +119,19 @@ float V_CalcBob (void)
 	if (cycle < cl_bobup.value)
 		cycle = M_PI * cycle / cl_bobup.value;
 	else
-		cycle = M_PI + M_PI*(cycle-cl_bobup.value)/(1.0 - cl_bobup.value);
+		cycle = M_PI + M_PI*(cycle-cl_bobup.value)/(1.0f - cl_bobup.value);
 
 // bob is proportional to velocity in the xy plane
 // (don't count Z, or jumping messes it up)
 
 	bob = sqrt(cl.velocity[0]*cl.velocity[0] + cl.velocity[1]*cl.velocity[1]) * cl_bob.value;
 //Con_Printf ("speed: %5.1f\n", Length(cl.velocity));
-	bob = bob*0.3 + bob*0.7*sin(cycle);
+	bob = bob*0.3f + bob*0.7f*sinf(cycle);
 	if (bob > 4)
 		bob = 4;
 	else if (bob < -7)
 		bob = -7;
 	return bob;
-	
 }
 
 
@@ -145,12 +144,6 @@ cvar_t	v_centerspeed = {"v_centerspeed","500"};
 
 void V_StartPitchDrift (void)
 {
-#if 1
-	if (cl.laststop == cl.time)
-	{
-		return;		// something else is keeping it from drifting
-	}
-#endif
 	if (cl.nodrift || !cl.pitchvel)
 	{
 		cl.pitchvel = v_centerspeed.value;
@@ -260,11 +253,6 @@ cvar_t		v_gamma = {"gamma", "1", true};
 
 byte		gammatable[256];	// palette is sent through this
 
-#ifdef	GLQUAKE
-byte		ramps[3][256];
-float		v_blend[4];		// rgba 0.0 - 1.0
-#endif	// GLQUAKE
-
 void BuildGammaTable (float g)
 {
 	int		i, inf;
@@ -278,7 +266,7 @@ void BuildGammaTable (float g)
 	
 	for (i=0 ; i<256 ; i++)
 	{
-		inf = 255 * pow ( (i+0.5)/255.5 , g ) + 0.5;
+		inf = 255 * powf ( (i+0.5)/255.5f , g ) + 0.5f;
 		if (inf < 0)
 			inf = 0;
 		if (inf > 255)
@@ -328,11 +316,11 @@ void V_ParseDamage (void)
 	for (i=0 ; i<3 ; i++)
 		from[i] = MSG_ReadCoord ();
 
-	count = blood*0.5 + armor*0.5;
+	count = blood*0.5f + armor*0.5f;
 	if (count < 10)
 		count = 10;
 
-	cl.faceanimtime = cl.time + 0.2;		// but sbar face into pain frame
+	cl.faceanimtime = cl.time + 0.2f;		// but sbar face into pain frame
 
 	cl.cshifts[CSHIFT_DAMAGE].percent += 3*count;
 	if (cl.cshifts[CSHIFT_DAMAGE].percent < 0)
@@ -478,139 +466,12 @@ void V_CalcPowerupCshift (void)
 V_CalcBlend
 =============
 */
-#ifdef	GLQUAKE
-void V_CalcBlend (void)
-{
-	float	r, g, b, a, a2;
-	int		j;
-
-	r = 0;
-	g = 0;
-	b = 0;
-	a = 0;
-
-	for (j=0 ; j<NUM_CSHIFTS ; j++)	
-	{
-		if (!gl_cshiftpercent.value)
-			continue;
-
-		a2 = ((cl.cshifts[j].percent * gl_cshiftpercent.value) / 100.0) / 255.0;
-
-//		a2 = cl.cshifts[j].percent/255.0;
-		if (!a2)
-			continue;
-		a = a + a2*(1-a);
-//Con_Printf ("j:%i a:%f\n", j, a);
-		a2 = a2/a;
-		r = r*(1-a2) + cl.cshifts[j].destcolor[0]*a2;
-		g = g*(1-a2) + cl.cshifts[j].destcolor[1]*a2;
-		b = b*(1-a2) + cl.cshifts[j].destcolor[2]*a2;
-	}
-
-	v_blend[0] = r/255.0;
-	v_blend[1] = g/255.0;
-	v_blend[2] = b/255.0;
-	v_blend[3] = a;
-	if (v_blend[3] > 1)
-		v_blend[3] = 1;
-	if (v_blend[3] < 0)
-		v_blend[3] = 0;
-}
-#endif
 
 /*
 =============
 V_UpdatePalette
 =============
 */
-#ifdef	GLQUAKE
-void V_UpdatePalette (void)
-{
-	int		i, j;
-	qboolean	new;
-	byte	*basepal, *newpal;
-	byte	pal[768];
-	float	r,g,b,a;
-	int		ir, ig, ib;
-	qboolean force;
-
-	V_CalcPowerupCshift ();
-	
-	new = false;
-	
-	for (i=0 ; i<NUM_CSHIFTS ; i++)
-	{
-		if (cl.cshifts[i].percent != cl.prev_cshifts[i].percent)
-		{
-			new = true;
-			cl.prev_cshifts[i].percent = cl.cshifts[i].percent;
-		}
-		for (j=0 ; j<3 ; j++)
-			if (cl.cshifts[i].destcolor[j] != cl.prev_cshifts[i].destcolor[j])
-			{
-				new = true;
-				cl.prev_cshifts[i].destcolor[j] = cl.cshifts[i].destcolor[j];
-			}
-	}
-	
-// drop the damage value
-	cl.cshifts[CSHIFT_DAMAGE].percent -= host_frametime*150;
-	if (cl.cshifts[CSHIFT_DAMAGE].percent <= 0)
-		cl.cshifts[CSHIFT_DAMAGE].percent = 0;
-
-// drop the bonus value
-	cl.cshifts[CSHIFT_BONUS].percent -= host_frametime*100;
-	if (cl.cshifts[CSHIFT_BONUS].percent <= 0)
-		cl.cshifts[CSHIFT_BONUS].percent = 0;
-
-	force = V_CheckGamma ();
-	if (!new && !force)
-		return;
-
-	V_CalcBlend ();
-
-	a = v_blend[3];
-	r = 255*v_blend[0]*a;
-	g = 255*v_blend[1]*a;
-	b = 255*v_blend[2]*a;
-
-	a = 1-a;
-	for (i=0 ; i<256 ; i++)
-	{
-		ir = i*a + r;
-		ig = i*a + g;
-		ib = i*a + b;
-		if (ir > 255)
-			ir = 255;
-		if (ig > 255)
-			ig = 255;
-		if (ib > 255)
-			ib = 255;
-
-		ramps[0][i] = gammatable[ir];
-		ramps[1][i] = gammatable[ig];
-		ramps[2][i] = gammatable[ib];
-	}
-
-	basepal = host_basepal;
-	newpal = pal;
-	
-	for (i=0 ; i<256 ; i++)
-	{
-		ir = basepal[0];
-		ig = basepal[1];
-		ib = basepal[2];
-		basepal += 3;
-		
-		newpal[0] = ramps[0][ir];
-		newpal[1] = ramps[1][ig];
-		newpal[2] = ramps[2][ib];
-		newpal += 3;
-	}
-
-	VID_ShiftPalette (pal);	
-}
-#else	// !GLQUAKE
 void V_UpdatePalette (void)
 {
 	int		i, j;
@@ -678,8 +539,6 @@ void V_UpdatePalette (void)
 
 	VID_ShiftPalette (pal);	
 }
-#endif	// !GLQUAKE
-
 
 /* 
 ============================================================================== 
@@ -711,12 +570,12 @@ void CalcGunAngle (void)
 	yaw = r_refdef.viewangles[YAW];
 	pitch = -r_refdef.viewangles[PITCH];
 
-	yaw = angledelta(yaw - r_refdef.viewangles[YAW]) * 0.4;
+	yaw = angledelta(yaw - r_refdef.viewangles[YAW]) * 0.4f;
 	if (yaw > 10)
 		yaw = 10;
 	if (yaw < -10)
 		yaw = -10;
-	pitch = angledelta(-pitch - r_refdef.viewangles[PITCH]) * 0.4;
+	pitch = angledelta(-pitch - r_refdef.viewangles[PITCH]) * 0.4f;
 	if (pitch > 10)
 		pitch = 10;
 	if (pitch < -10)
@@ -929,18 +788,13 @@ void V_CalcRefdef (void)
 
 	for (i=0 ; i<3 ; i++)
 	{
-		view->origin[i] += forward[i]*bob*0.4;
-//		view->origin[i] += right[i]*bob*0.4;
-//		view->origin[i] += up[i]*bob*0.8;
+		view->origin[i] += forward[i]*bob*0.4f;
 	}
 	view->origin[2] += bob;
 
 // fudge position around to keep amount of weapon visible
 // roughly equal with different FOV
 
-#if 0
-	if (cl.model_precache[cl.stats[STAT_WEAPON]] && strcmp (cl.model_precache[cl.stats[STAT_WEAPON]]->name,  "progs/v_shot2.mdl"))
-#endif
 	if (scr_viewsize.value == 110)
 		view->origin[2] += 1;
 	else if (scr_viewsize.value == 100)
@@ -1053,12 +907,9 @@ void V_RenderView (void)
 		R_RenderView ();
 	}
 
-#ifndef GLQUAKE
 	if (crosshair.value)
-		Draw_Character (scr_vrect.x + scr_vrect.width/2 + cl_crossx.value, 
+		Draw_Character (scr_vrect.x + scr_vrect.width/2 + cl_crossx.value,
 			scr_vrect.y + scr_vrect.height/2 + cl_crossy.value, '+');
-#endif
-		
 }
 
 //============================================================================

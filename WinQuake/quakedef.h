@@ -33,11 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 //define	PARANOID			// speed sapping error checking
 
-#ifdef QUAKE2
-#define	GAMENAME	"id1"		// directory to look in by default
-#else
 #define	GAMENAME	"id1"
-#endif
 
 #include <math.h>
 #include <string.h>
@@ -46,15 +42,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <setjmp.h>
 
-#if defined(_WIN32) && !defined(WINDED)
-#if defined(_M_IX86)
 #define __i386__	1
-#endif
-#endif
 
 #define	VID_LockBuffer()
 #define	VID_UnlockBuffer()
-#define VID_HandlePause(A)
 
 
 #define id386	0

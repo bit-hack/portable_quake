@@ -5,17 +5,15 @@ find_package(sdl REQUIRED)
 include_directories(${SDL_INCLUDE_DIR})
 
 add_definitions(-D__WIN32__)
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 set(SOURCES
 	adivtab.h
 	anorm_dots.h
 	anorms.h
-	asm_draw.h
-	asm_i386.h
 	block16.h
 	block8.h
 	bspfile.h
-#	cd_sdl.c
 	cdaudio.h
 	chase.c
 	cl_demo.c
@@ -23,7 +21,6 @@ set(SOURCES
 	cl_main.c
 	cl_parse.c
 	cl_tent.c
-	clean.bat
 	client.h
 	cmd.c
 	cmd.h
@@ -36,7 +33,6 @@ set(SOURCES
 	crc.h
 	cvar.c
 	cvar.h
-#	d_copy.S
 	d_edge.c
 	d_fill.c
 	d_iface.h
@@ -51,8 +47,6 @@ set(SOURCES
 	d_sprite.c
 	d_surf.c
 	d_zpoint.c
-#	dosasm.S
-	dosisms.h
 	draw.c
 	draw.h
 	host.c
@@ -67,20 +61,10 @@ set(SOURCES
 	model.c
 	model.h
 	modelgen.h
-	mpdosock.h
 	net.h
-#	net_bsd.c
-#	net_bw.h
-#	net_dgrm.c
-#	net_dgrm.h
 	net_loop.c
 	net_loop.h
 	net_main.c
-#	net_udp.c
-#	net_udp.h
-#	net_vcr.c
-#	net_vcr.h
-#	net_wso.c
 	pr_cmds.c
 	pr_comp.h
 	pr_edict.c
@@ -88,7 +72,6 @@ set(SOURCES
 	progdefs.h
 	progs.h
 	protocol.h
-	quakeasm.h
 	quakedef.h
 	r_aclip.c
 	r_alias.c
@@ -106,18 +89,12 @@ set(SOURCES
 	r_sprite.c
 	r_surf.c
 	r_vars.c
-#	r_varsa.S
 	render.h
-	resource.h
 	sbar.c
 	sbar.h
 	screen.c
 	screen.h
 	server.h
-#	snd_dma.c
-#	snd_mem.c
-#	snd_mix.c
-#	snd_sdl.c
 	sound.h
 	spritegn.h
 	sv_main.c
@@ -133,15 +110,12 @@ set(SOURCES
 	view.h
 	wad.c
 	wad.h
-	winquake.h
 	world.c
 	world.h
 	zone.c
 	zone.h
-
     d_vars.c
 	nonintel.c
-    
     snd_null.c
     cd_null.c
     net_none.c

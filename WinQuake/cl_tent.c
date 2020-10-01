@@ -32,10 +32,6 @@ sfx_t			*cl_sfx_ric1;
 sfx_t			*cl_sfx_ric2;
 sfx_t			*cl_sfx_ric3;
 sfx_t			*cl_sfx_r_exp3;
-#ifdef QUAKE2
-sfx_t			*cl_sfx_imp;
-sfx_t			*cl_sfx_rail;
-#endif
 
 /*
 =================
@@ -51,10 +47,6 @@ void CL_InitTEnts (void)
 	cl_sfx_ric2 = S_PrecacheSound ("weapons/ric2.wav");
 	cl_sfx_ric3 = S_PrecacheSound ("weapons/ric3.wav");
 	cl_sfx_r_exp3 = S_PrecacheSound ("weapons/r_exp3.wav");
-#ifdef QUAKE2
-	cl_sfx_imp = S_PrecacheSound ("shambler/sattck1.wav");
-	cl_sfx_rail = S_PrecacheSound ("weapons/lstart.wav");
-#endif
 }
 
 /*
@@ -85,7 +77,7 @@ void CL_ParseBeam (model_t *m)
 		{
 			b->entity = ent;
 			b->model = m;
-			b->endtime = cl.time + 0.2;
+			b->endtime = cl.time + 0.2f;
 			VectorCopy (start, b->start);
 			VectorCopy (end, b->end);
 			return;
@@ -98,7 +90,7 @@ void CL_ParseBeam (model_t *m)
 		{
 			b->entity = ent;
 			b->model = m;
-			b->endtime = cl.time + 0.2;
+			b->endtime = cl.time + 0.2f;
 			VectorCopy (start, b->start);
 			VectorCopy (end, b->end);
 			return;
@@ -116,9 +108,6 @@ void CL_ParseTEnt (void)
 {
 	int		type;
 	vec3_t	pos;
-#ifdef QUAKE2
-	vec3_t	endpos;
-#endif
 	dlight_t	*dl;
 	int		rnd;
 	int		colorStart, colorLength;
@@ -146,11 +135,7 @@ void CL_ParseTEnt (void)
 		pos[0] = MSG_ReadCoord ();
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
-#ifdef GLTEST
-		Test_Spawn (pos);
-#else
 		R_RunParticleEffect (pos, vec3_origin, 0, 10);
-#endif
 		if ( rand() % 5 )
 			S_StartSound (-1, 0, cl_sfx_tink1, pos, 1, 1);
 		else
@@ -199,7 +184,7 @@ void CL_ParseTEnt (void)
 		dl = CL_AllocDlight (0);
 		VectorCopy (pos, dl->origin);
 		dl->radius = 350;
-		dl->die = cl.time + 0.5;
+		dl->die = cl.time + 0.5f;
 		dl->decay = 300;
 		S_StartSound (-1, 0, cl_sfx_r_exp3, pos, 1, 1);
 		break;
@@ -255,37 +240,10 @@ void CL_ParseTEnt (void)
 		dl = CL_AllocDlight (0);
 		VectorCopy (pos, dl->origin);
 		dl->radius = 350;
-		dl->die = cl.time + 0.5;
+		dl->die = cl.time + 0.5f;
 		dl->decay = 300;
 		S_StartSound (-1, 0, cl_sfx_r_exp3, pos, 1, 1);
 		break;
-		
-#ifdef QUAKE2
-	case TE_IMPLOSION:
-		pos[0] = MSG_ReadCoord ();
-		pos[1] = MSG_ReadCoord ();
-		pos[2] = MSG_ReadCoord ();
-		S_StartSound (-1, 0, cl_sfx_imp, pos, 1, 1);
-		break;
-
-	case TE_RAILTRAIL:
-		pos[0] = MSG_ReadCoord ();
-		pos[1] = MSG_ReadCoord ();
-		pos[2] = MSG_ReadCoord ();
-		endpos[0] = MSG_ReadCoord ();
-		endpos[1] = MSG_ReadCoord ();
-		endpos[2] = MSG_ReadCoord ();
-		S_StartSound (-1, 0, cl_sfx_rail, pos, 1, 1);
-		S_StartSound (-1, 1, cl_sfx_r_exp3, endpos, 1, 1);
-		R_RocketTrail (pos, endpos, 0+128);
-		R_ParticleExplosion (endpos);
-		dl = CL_AllocDlight (-1);
-		VectorCopy (endpos, dl->origin);
-		dl->radius = 350;
-		dl->die = cl.time + 0.5;
-		dl->decay = 300;
-		break;
-#endif
 
 	default:
 		Sys_Error ("CL_ParseTEnt: bad type");
@@ -359,12 +317,12 @@ void CL_UpdateTEnts (void)
 		}
 		else
 		{
-			yaw = (int) (atan2(dist[1], dist[0]) * 180 / M_PI);
+			yaw = (int) (atan2f(dist[1], dist[0]) * 180 / M_PI);
 			if (yaw < 0)
 				yaw += 360;
 	
 			forward = sqrt (dist[0]*dist[0] + dist[1]*dist[1]);
-			pitch = (int) (atan2(dist[2], forward) * 180 / M_PI);
+			pitch = (int) (atan2f(dist[2], forward) * 180 / M_PI);
 			if (pitch < 0)
 				pitch += 360;
 		}

@@ -1,10 +1,7 @@
-//#include <unistd.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <limits.h>
-//#include <sys/time.h>
 #include <sys/types.h>
-//#include <unistd.h>
 #include <fcntl.h>
 
 #include <assert.h>
@@ -14,14 +11,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
-
-#ifndef __WIN32__
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
-#include <sys/mman.h>
-#endif
 
 #include "quakedef.h"
 
@@ -262,11 +251,7 @@ int	Sys_FileTime (char *path)
 
 void Sys_mkdir (char *path)
 {
-#ifdef __WIN32__
     mkdir (path);
-#else
-    mkdir (path, 0777);
-#endif
 }
 
 void Sys_DebugLog(char *file, char *fmt, ...)
@@ -285,32 +270,12 @@ void Sys_DebugLog(char *file, char *fmt, ...)
 
 double Sys_FloatTime (void)
 {
-#ifdef __WIN32__
-
 	static int starttime = 0;
 
 	if ( ! starttime )
 		starttime = clock();
 
 	return (clock()-starttime)*1.0/1024;
-
-#else
-
-    struct timeval tp;
-    struct timezone tzp; 
-    static int      secbase; 
-    
-    gettimeofday(&tp, &tzp);  
-
-    if (!secbase)
-    {
-        secbase = tp.tv_sec;
-        return tp.tv_usec/1000000.0;
-    }
-
-    return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
-
-#endif
 }
 
 // =======================================================================
@@ -367,8 +332,6 @@ int main (int c, char **v)
 
 	double		time, oldtime, newtime;
 	quakeparms_t parms;
-	extern int vcrFile;
-	extern int recording;
 	static int frame;
 
 	moncontrol(0);
@@ -400,7 +363,7 @@ int main (int c, char **v)
 
         if (cls.state == ca_dedicated)
         {   // play vcrfiles at max speed
-            if (time < sys_ticrate.value && (vcrFile == -1 || recording) )
+            if (time < sys_ticrate.value)
             {
                 SDL_Delay (1);
                 continue;       // not time to run a server only tic yet
@@ -424,29 +387,3 @@ int main (int c, char **v)
     }
 
 }
-
-
-/*
-================
-Sys_MakeCodeWriteable
-================
-*/
-void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
-{
-#if 0
-	int r;
-	unsigned long addr;
-	int psize = getpagesize();
-
-	fprintf(stderr, "writable code %lx-%lx\n", startaddr, startaddr+length);
-
-	addr = startaddr & ~(psize-1);
-
-	r = mprotect((char*)addr, length + startaddr - addr, 7);
-
-	if (r < 0)
-    		Sys_Error("Protection change failed\n");
-#endif
-  assert(!"toto");
-}
-
