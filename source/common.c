@@ -390,7 +390,7 @@ float Q_atof (char *str)
 //
 	if (str[0] == '\'')
 	{
-		return sign * str[1];
+		return (float)(sign * str[1]);
 	}
 	
 //
@@ -430,10 +430,6 @@ float Q_atof (char *str)
 
 ============================================================================
 */
-
-#ifdef SDL
-#include "SDL_byteorder.h"
-#endif
 
 qboolean        bigendien;
 
@@ -1128,12 +1124,7 @@ void COM_Init (char *basedir)
 	byte    swaptest[2] = {1,0};
 
 // set the byte swapping variables in a portable manner 
-#ifdef SDL
-	// This is necessary because egcs 1.1.1 mis-compiles swaptest with -O2
-	if ( SDL_BYTEORDER == SDL_LIL_ENDIAN )
-#else
 	if ( *(short *)swaptest == 1)
-#endif
 	{
 		bigendien = false;
 		BigShort = ShortSwap;

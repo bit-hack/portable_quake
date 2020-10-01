@@ -9,9 +9,7 @@
 #include <ctype.h>
 #include <errno.h>
 
-#define _SDL_main_h
-#include <SDL.h>
-
+#include "port.h"
 #include "quakedef.h"
 
 
@@ -258,10 +256,7 @@ void Sys_DebugLog(char *file, char *fmt, ...)
 
 float Sys_FloatTime (void)
 {
-	static clock_t starttime = 0;
-	if ( ! starttime )
-		starttime = clock();
-	return (float)(clock()-starttime) / (float)CLOCKS_PER_SEC;
+  return port_time();
 }
 
 // =======================================================================
@@ -300,7 +295,7 @@ void Sys_LineRefresh(void)
 
 void Sys_Sleep(void)
 {
-	SDL_Delay(1);
+  port_sleep(1);
 }
 
 int main (int c, char **v)
@@ -337,6 +332,8 @@ int main (int c, char **v)
             oldtime += time;
 
         Host_Frame (time);
+
+        port_tick();
 
 // graphic debugging aids
         if (sys_linerefresh.value)

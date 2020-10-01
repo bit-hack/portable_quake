@@ -118,6 +118,8 @@ set(SOURCES
 	source/snd_null.c
 	source/cd_null.c
 	source/net_none.c
+    source/port_sdl.c
+    source/port.h
 	)
 
 add_executable(quake ${SOURCES})
