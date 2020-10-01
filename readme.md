@@ -1,4 +1,11 @@
+# Portable Quake
 
+This is a source port of quake focusing on ease of portability to new
+platforms.
+
+It is still a work in progress however...
+
+```
 This is the complete source code for winquake, glquake, quakeworld, and 
 glquakeworld.
 
@@ -56,5 +63,4 @@ building this release.
 
 John Carmack
 Id Software
-
-
+```
