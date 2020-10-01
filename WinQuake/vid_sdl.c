@@ -290,6 +290,7 @@ void Sys_SendKeyEvents(void)
                 Key_Event(sym, state);
                 break;
 
+#if 0
             case SDL_MOUSEMOTION:
                 if ( (event.motion.x != (vid.width/2)) ||
                      (event.motion.y != (vid.height/2)) ) {
@@ -303,6 +304,7 @@ void Sys_SendKeyEvents(void)
                     }
                 }
                 break;
+#endif
 
             case SDL_QUIT:
                 CL_Disconnect ();

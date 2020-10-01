@@ -64,12 +64,7 @@ void Sys_Quit (void)
 
 void Sys_Init(void)
 {
-#if id386
-	Sys_SetFPCW();
-#endif
 }
-
-#if !id386
 
 /*
 ================
@@ -91,8 +86,6 @@ void Sys_HighFPPrecision (void)
 {
 // causes weird problems on Nextstep
 }
-
-#endif	// !id386
 
 
 void Sys_Error (char *error, ...)

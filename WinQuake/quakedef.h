@@ -52,27 +52,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #endif
 
-// void	VID_LockBuffer (void);
-// void	VID_UnlockBuffer (void);
-// 
-// #else
-
 #define	VID_LockBuffer()
 #define	VID_UnlockBuffer()
 #define VID_HandlePause(A)
 
 
-#if defined(__i386__) && defined(USE_ASM)
-#define id386	1
-#else
 #define id386	0
-#endif
 
-#if id386
-#define UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
-#else
 #define UNALIGNED_OK	0
-#endif
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define CACHE_SIZE	32		// used to align key data structures
@@ -243,12 +230,8 @@ typedef struct
 #include "progs.h"
 #include "server.h"
 
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
 #include "model.h"
 #include "d_iface.h"
-#endif
 
 #include "input.h"
 #include "world.h"
@@ -258,10 +241,6 @@ typedef struct
 #include "menu.h"
 #include "crc.h"
 #include "cdaudio.h"
-
-#ifdef GLQUAKE
-#include "glquake.h"
-#endif
 
 //=============================================================================
 
