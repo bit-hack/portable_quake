@@ -663,7 +663,7 @@ void Mod_LoadTexinfo (lump_t *l)
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
 		for (j=0 ; j<8 ; j++)
-			out->vecs[0][j] = LittleFloat (in->vecs[0][j]);
+			((float*)out->vecs)[j] = LittleFloat (((float*)in->vecs)[j]);
 		len1 = Length (out->vecs[0]);
 		len2 = Length (out->vecs[1]);
 		len1 = (len1 + len2)/2;
@@ -1801,8 +1801,8 @@ void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 	mod->synctype = LittleLong (pin->synctype);
 	psprite->numframes = numframes;
 
-	mod->mins[0] = (float) mod->mins[1] = -psprite->maxwidth/2;
-	mod->maxs[0] = (float) mod->maxs[1] = psprite->maxwidth/2;
+	mod->mins[0] = mod->mins[1] = (float)-psprite->maxwidth / 2;
+  mod->maxs[0] = mod->maxs[1] = (float)psprite->maxwidth/2;
 	mod->mins[2] = (float) -psprite->maxheight/2;
 	mod->maxs[2] = (float) psprite->maxheight/2;
 	

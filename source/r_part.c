@@ -91,11 +91,11 @@ void R_EntityParticles (entity_t *ent)
 	dist = 64;
 	count = 50;
 
-if (!avelocities[0][0])
-{
-for (i=0 ; i<NUMVERTEXNORMALS*3 ; i++)
-avelocities[0][i] = (rand()&255) * 0.01f;
-}
+  if (!avelocities[0][0])
+  {
+    for (i=0 ; i<NUMVERTEXNORMALS*3 ; i++)
+      ((float*)avelocities)[i] = (rand()&255) * 0.01f;
+  }
 
 
 	for (i=0 ; i<NUMVERTEXNORMALS ; i++)
